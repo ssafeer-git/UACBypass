@@ -74,21 +74,20 @@ namespace Toolkit
             try
             {
                 string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                
+
                 WriteToFile("Starting Service...");
                 WriteToFile("Service Version:" + version);
                 WriteToFile("Getting System IP Address");
                 ip = GetLocalIPAddress();
                 WriteToFile("Computer IP Address:" + ip);
-
-                WriteToFile("Getting System32 Hashes");
-                GetSystem32Hashes();
-                WriteToFile("Hashes Obtained");
-
                 //LOAD DATABASE PARAMTERS FROM WEB SERVICE
                 WriteToFile("Loading Starting Parameters");
                 LoadParams();
                 WriteToFile("Parameters Loaded Sucessfully... Host:" + DBHost + ", Database:" + DBName + ", Username:" + Username + ", Password:1800-F***-U, URI:" + URI + ", Debug:" + debug.ToString());
+                WriteToFile("Getting Blacklisted Hashes from config");
+                GenerateBlackListedHashes();
+                WriteToFile("Hashes Obtained");
+                WriteToHashesFile();
 
                 connection = new MySqlConnection("SERVER=" + DBHost + ";DATABASE=" + DBName + ";UID=" + Username + ";PASSWORD=" + Password + ";");
                 WriteToFile("Successfully Opened A Connection With DB");
@@ -97,7 +96,7 @@ namespace Toolkit
                 //LOG ALL DETAILS IN DB
                 AddDebugLogs(connection, Logs.debug, "Elevator service started on: " + ip);
                 AddDebugLogs(connection, Logs.debug, "Service Version:" + version);
-                AddDebugLogs(connection, Logs.debug, "System32 hashes loaded sucessfully on " + ip);
+                AddDebugLogs(connection, Logs.debug, "blacklisted hashes loaded sucessfully on " + ip);
                 AddDebugLogs(connection, Logs.debug, "Start up parameters loaded successfully on " + ip + "... Host:" + DBHost + ", Database:" + DBName + ", Username:" + Username + ", Password:1800-F***-U, URI:" + URI + ", Debug:" + debug.ToString());
                 AddDebugLogs(connection, Logs.debug, "Successfully opened a connection with db on " + ip);
 
@@ -253,7 +252,7 @@ namespace Toolkit
             URI = controller.uri;
             DBName = controller.name;
             debug = controller.debug;
-
+            BlackListedPaths = controller.blacklist;
 
         }
 
@@ -399,27 +398,6 @@ namespace Toolkit
             return value;
         }
 
-        private void GetSystem32Hashes()
-        {
-            var info = new DirectoryInfo(@"C:\Windows\System32");
-            FileInfo[] files = info.GetFiles("*.*");
-            string hash = null;
-            foreach (var file in files)
-            {
-
-                try
-                {
-                    hash = GetSHAHashFromFile(file.FullName);
-                    if (!string.IsNullOrEmpty(hash))
-                    {
-                        BLPrograms.Add(new BlackListedHashes(file.Name, hash));
-                    }
-                }
-                catch (Exception ex) { }
-
-            }
-        }
-
         private void SendNotification(string eventname, string userid, string ip, string message)
         {
             try
@@ -445,6 +423,72 @@ namespace Toolkit
 
             }
 
+        }
+
+        private void GenerateBlackListedHashes()
+        {
+            try
+            {
+                //MAKE SURE WE WERE ABLE TO DESERIALZE THE INCOMING BLACKLISTED FILES AND DIRECTORIES
+                if (BlackListedPaths != null)
+                {
+                    foreach (string path in BlackListedPaths)
+                    {
+                        GetHashOfFileDirectory(path);
+                    }
+                }
+                else
+                {
+                    WriteToFile("Unable to obtain blacklisted directories or files, blacklistedpath array is null; try debugging your service");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteToFile("An exception occourred at method 'GenerateBlackListedHashes' :" + ex.Message);
+            }
+        }
+
+        private void GetHashOfFileDirectory(string path)
+        {
+            if (File.Exists(path))
+            {
+                //THE PASSED IN PATH IS A FILE
+                string hash = GetSHAHashFromFile(path);
+                if (!string.IsNullOrEmpty(hash))
+                {
+                    BLPrograms.Add(new BlackListedHashes(path, hash));
+                }
+            }
+            else if (Directory.Exists(path))
+            {
+                //THE PASSED IN PATH IS A DIRECTORY
+                var info = new DirectoryInfo(path);
+                FileInfo[] files = info.GetFiles("*.*");
+                foreach (var file in files)
+                {
+                    string hash = GetSHAHashFromFile(file.FullName);
+                    if (!string.IsNullOrEmpty(hash))
+                    {
+                        BLPrograms.Add(new BlackListedHashes(file.Name, hash));
+                    }
+                }
+            }
+            else
+            {
+                //NOT A VALID PATH FOR EITHER FILE OR DIRECTORY
+                WriteToFile("Unable to obtain hashes because the specified path is not a valid file or direcotry: " + path);
+            }
+        }
+
+        void WriteToHashesFile()
+        {
+            StreamWriter sw = new StreamWriter(@"C:\Temp\Hashes.txt", true);
+            foreach(var bapp in BLPrograms)
+            {
+                sw.WriteLine(DateTime.Now.ToString() + " => " + bapp.ProgramName + " : " + bapp.SHA256Hash);
+            }
+          
+            sw.Close();
         }
 
     }
