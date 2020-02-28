@@ -11,6 +11,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Reflection;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Toolkit
 {
@@ -26,6 +27,7 @@ namespace Toolkit
         bool BlackListedAppRequested = false;
         bool MD5HashNotFound = false;
         bool debug;
+        List<string> BlackListedPaths;
         System.Collections.Generic.List<BlackListedHashes> BLPrograms;
         public ElevatorService()
         {

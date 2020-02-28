@@ -13,5 +13,6 @@ namespace Toolkit
         public string name { get; set; }
         public string uri { get; set; }
         public bool debug { get; set; }
+        public List<string> blacklist { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ApplicationLoaderService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Plan A Software")]
+[assembly: AssemblyCompany("Awesome Software")]
 [assembly: AssemblyProduct("ApplicationLoaderService")]
 [assembly: AssemblyCopyright("Copyright © Pero Matic 2009")]
 [assembly: AssemblyTrademark("")]
