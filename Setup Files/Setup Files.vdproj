@@ -39,6 +39,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D37A834D11F91AA4839D4E6E59D5E2D6"
+        "OwnerKey" = "8:_3E3026042FC14DBCA8D0D4D46C5E06B1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_73BCE1428C854F8599B7A89B5379EC0A"
         "MsmSig" = "8:_UNDEFINED"
@@ -47,6 +53,12 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3E3026042FC14DBCA8D0D4D46C5E06B1"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_D37A834D11F91AA4839D4E6E59D5E2D6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -247,6 +259,11 @@
             "AssemblyAsmDisplayName" = "8:MySql.Data, Version=6.8.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
+                    "_0983E208683E7FF374464F6276486DAC"
+                    {
+                    "Name" = "8:MySql.Data.dll"
+                    "Attributes" = "3:512"
+                    }
                 }
             "SourcePath" = "8:MySql.Data.dll"
             "TargetName" = "8:"
@@ -328,6 +345,37 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D37A834D11F91AA4839D4E6E59D5E2D6"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:SharpShell, Version=2.7.1.0, Culture=neutral, PublicKeyToken=f14dc899472fe6fb, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_D37A834D11F91AA4839D4E6E59D5E2D6"
+                    {
+                    "Name" = "8:SharpShell.DLL"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:SharpShell.DLL"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_3E8BD8825FEB4729A15E378A4A177636"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -384,15 +432,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Awesome Software"
-        "ProductCode" = "8:{4B580448-83E0-448F-9C45-D91B6381F6AD}"
-        "PackageCode" = "8:{128290CE-C01C-4B0D-948C-A92555CA7C87}"
+        "ProductCode" = "8:{50B80DFF-A3D4-4714-B05C-F1857FD1168B}"
+        "PackageCode" = "8:{183A64CA-FC66-4479-A4C3-C0FBA6CF7EAB}"
         "UpgradeCode" = "8:{1B41F123-FACB-4544-8E3D-4F21F4C24CB4}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:2.1"
+        "ProductVersion" = "8:2.2.1.1"
         "Manufacturer" = "8:Awesome Software"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

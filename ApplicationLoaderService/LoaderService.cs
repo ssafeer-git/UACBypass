@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
 namespace Toolkit
 {
@@ -78,7 +79,7 @@ namespace Toolkit
                 WriteToFile("Starting Service...");
                 WriteToFile("Service Version:" + version);
                 WriteToFile("Getting System IP Address");
-                ip = GetLocalIPAddress();
+                ip = GetIPAddress();
                 WriteToFile("Computer IP Address:" + ip);
                 //LOAD DATABASE PARAMTERS FROM WEB SERVICE
                 WriteToFile("Loading Starting Parameters");
@@ -127,6 +128,8 @@ namespace Toolkit
                         Reader.Dispose();
                         if (Data.Rows.Count > 0)
                         {
+                            ip = GetIPAddress();
+                            WriteToFile("Request found, trying to process request on " +ip);
                             ProcessIFValidRequest(Data);
                         }
 
@@ -180,7 +183,7 @@ namespace Toolkit
                         message = "You are trying to install an application that is not permitted by your network administrator";
                     }
 
-                    SendNotification(log.ToString(), NRCAN_UserID, GetLocalIPAddress(), message);
+                    SendNotification(log.ToString(), NRCAN_UserID, GetIPAddress(), message);
                 }
 
             }
@@ -214,21 +217,45 @@ namespace Toolkit
             sw.Close();
         }
 
-        public string GetLocalIPAddress()
+        public static string GetIPAddress()
         {
-            string ipAddress = null;
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            string ipaddress = String.Empty;
+
+            // Get a list of all network interfaces (usually one per network card, dialup, and VPN connection)
+            NetworkInterface[] networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
+
+            foreach (NetworkInterface network in networkInterfaces)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+
+
+                if (network.OperationalStatus == OperationalStatus.Up)
                 {
-                    ipAddress = ip.ToString().Trim();
+                    // Read the IP configuration for each network
+                    IPInterfaceProperties properties = network.GetIPProperties();
+                    // Each network interface may have multiple IP addresses
+                    foreach (IPAddressInformation address in properties.UnicastAddresses)
+                    {
+                        // We're only interested in IPv4 addresses for now
+                        if (address.Address.AddressFamily != AddressFamily.InterNetwork)
+                            continue;
+
+                        // Ignore loopback addresses (e.g., 127.0.0.1)
+                        if (IPAddress.IsLoopback(address.Address))
+                            continue;
+
+                        ipaddress = address.Address.ToString();
+                        //THE FUNCTION CAN RETURN MULTIPLE IP'S DEPENDING ON HOWEVER MANY NICS WE HAVE AND THEY'RE ALL ACTIVE
+                        //IN OUR CASE WE JUST WANT TO RETURN AN IP OF VPN IF IT IS ACTIVE, IF NOT THEN SIMPLY RETURN THE IP WITH THE HIGHEST METRIC CONFIGURAITON
+                        if (network.Description.ToLower().Contains("cisco anyconnect"))
+                        {
+                            return ipaddress;
+                        }
+                        //ELSE KEEP LOOPING AND RETURN THE ONE WITH THE HIGEST PRIORITY
+                    }
                 }
             }
 
-
-
-            return ipAddress;
+            return ipaddress;
         }
 
         private void LoadParams()
